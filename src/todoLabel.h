@@ -41,7 +41,7 @@ protected:
     void leaveEvent(QEvent* event);
 private:
     QPixmap* labelPic;
-    int wdt, hgt;
+    int wdt, hgt, screenWidth, screenHeight;
 	QTextEdit* theTodoList;
 private slots:
 	void toDoListChanged();

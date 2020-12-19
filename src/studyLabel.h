@@ -84,7 +84,6 @@ private slots:
 	void studyOption6();
 	void configureClasses();
 	void deleteOptionSelected();
-	//void muteLaptop();
 };
 
 #endif // STUDYLABEL_H

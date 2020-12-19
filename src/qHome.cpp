@@ -4,28 +4,30 @@ using namespace std;
 #define API_ID "762fe51da0e8caa555c7a4f03d4fa84d" //my API ID key for openweather.org
 qHome::qHome(QWidget* parent) : QMainWindow(parent) {
 	ui.setupUi(this);
-	bkgdMenu = new QMenu();
-	bkgdMenu->addAction("Change Background Image", this, SLOT(changeBackgroundImage()));
-	openWeth = new QNetworkAccessManager(this);
-	this->setWindowTitle("QHome");
-	this->setWindowIcon(QIcon("img/image14"));
-	/* Get screen dimenstions and set dim of labels */
-	QDesktopWidget desktop; 
+	QDesktopWidget desktop;
 	screenHeight = desktop.geometry().height();
 	screenWidth = desktop.geometry().width();
-	ui.wethInfo->setFixedWidth(screenWidth / 6);
-	ui.wethInfo->setFixedHeight(screenHeight / 5);
-	/* Setup weather stuff */
-	wethIcon = new QLabel("", this);
-	wethIcon->setStyleSheet("QLabel { color : white; }");
+	bkgdMenu = new QMenu();
 	wethInfo = new QLabel("", this);
+	wethIcon = new QLabel("", this);
+	openWeth = new QNetworkAccessManager(this);
+	headPhones = new bluetoothLabel(nullptr, "img/beatsUnconnected", screenHeight / 11, screenHeight / 11);
+	classWork = new studyLabel(nullptr, "img/bookImage2", screenHeight / 11, screenHeight / 11);
+	toDoList = new todoLabel(nullptr, "img/todoListImage", screenHeight / 11, screenHeight / 11);
+	musicPlayer = new musicLabel(nullptr, "img/spotifyImage", screenHeight / 11, screenHeight / 11);
+
+	/* Setup weather stuff */
+	wethIcon->setStyleSheet("QLabel { color : white; }");
+	ui.wethInfo->setFixedWidth(screenWidth / 6);
+	ui.wethInfo->setFixedHeight(screenHeight / 5);	
     ui.wethInfo->setStyleSheet("QLabel { color : white; }");
 	QFont font = ui.wethInfo->font();
 	font.setPointSize(((int)(screenHeight/82) + 2)); //add 2 so that value is never 0 bc behavior isn't defined for that
 	ui.wethInfo->setAlignment(Qt::AlignLeft);
 	font.setFamily("century gothic");
 	ui.wethInfo->setFont(font);
-	/* setting window background img below*/
+
+	/* setting main window background img*/
 	QPalette pal; 
 	QFile bkgdImgFile("res/bkgdImgPathFile.txt");
 	QTextStream bkgdImgStream(&bkgdImgFile);
@@ -51,14 +53,16 @@ qHome::qHome(QWidget* parent) : QMainWindow(parent) {
 	bkgdImgFile.close();
 	
 	/* Rest of setup */
-	headPhones = new bluetoothLabel(nullptr, "img/beatsUnconnected", screenHeight / 11, screenHeight / 11);
-	classWork = new studyLabel(nullptr, "img/bookImage2", screenHeight / 11, screenHeight / 11);
-	toDoList = new todoLabel(nullptr, "img/todoListImage", screenHeight / 11, screenHeight / 11);
-	musicPlayer = new musicLabel(nullptr, "img/spotifyImage", screenHeight / 11, screenHeight / 11);
 	ui.gridCell1->addWidget(headPhones);
 	ui.gridCell2->addWidget(toDoList);
 	ui.gridCell3->addWidget(classWork);
 	ui.gridCell4->addWidget(musicPlayer);
+	
+	bkgdMenu->addAction("Change Background Image", this, SLOT(changeBackgroundImage()));
+	
+	this->setWindowTitle("QHome");
+	this->setWindowIcon(QIcon("img/image14"));
+
 	QGeoPositionInfoSource* source = QGeoPositionInfoSource::createDefaultSource(this);
 	if (source) {
 		connect(source, SIGNAL(positionUpdated(QGeoPositionInfo)), this, SLOT(positionUpdated(QGeoPositionInfo)));
@@ -135,7 +139,7 @@ void qHome::handleGeoWeatherData(QNetworkReply* networkReply) { //where weather 
 		message.exec();
 		return;
 	}
-	//parse JSON reply from open-weather API
+	//parse JSON reply from open weather API
 	QJsonDocument document = QJsonDocument::fromJson(networkReply->readAll());
 	string tempWeatherDesc = "";
 	QString temprature, humidity, nightDay = "";
@@ -160,7 +164,7 @@ void qHome::handleGeoWeatherData(QNetworkReply* networkReply) { //where weather 
 	tempFar += 32.0;
 	temprature.setNum((int)tempFar);
 	temprature += 176;
-	temprature += "F    ";
+	temprature += "F / ";
 	temprature += QString::number((int)tempCel);
 	temprature += 176;
 	temprature += "C";
@@ -224,19 +228,21 @@ void qHome::mousePressEvent(QMouseEvent* event) {
 	}
 	return;
 }
-/*Is called when toolbar button is clicked*/
+/*Is called when user wants to change background image*/
 void qHome::changeBackgroundImage() {
 	QString newImgFilepath = QFileDialog::getOpenFileName(this,
 		"Pick new background image", QDir::homePath());
 	if (newImgFilepath != "") {
+
 		if (newImgFilepath.right(4) != ".png" && newImgFilepath.right(4) != ".jpg") { //very important check
 			QMessageBox message;
 			message.setWindowTitle("Invalid Action");
-			message.setText("Please select photo with .png or .jpg extension");
+			message.setText("Please select file with .png or .jpg extension");
 			message.setWindowIcon(QIcon("img/warningImage"));
 			message.exec();
 			return;
 		}
+
 		QPalette pal; //setting new window background img
 		bkgd = QPixmap(newImgFilepath);
 		bkgd = bkgd.scaled(this->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);

@@ -2,29 +2,30 @@
 studyLabel::studyLabel(QWidget* parent, const QString& picPath, int w, int h) {
 	wdt = w;
 	hgt = h;
-	
 	studyMenu = new QMenu();
 	deleteOptions = new myQListWidget();
-	deleteOptions->setWindowIcon(QIcon("img/image14"));
-	deleteOptions->setWindowTitle("Deletion Options");
-	deleteOptions->setFont(QFont("Courier"));
+	labelPic = new QPixmap(picPath);
 	wantToDeleteFile = 0;
 	wantToDeleteURL = 0;
 	classFilenameToDeleteFrom = "";
 	classNameToDeleteFrom = "";
 	
-	addClass("res/studyOption1.txt", 1, "1");
+	deleteOptions->setWindowIcon(QIcon("img/image14"));
+	deleteOptions->setWindowTitle("Deletion Options");
+	deleteOptions->setFont(QFont("Courier"));	addClass("res/studyOption1.txt", 1, "1");
+	studyMenu->addAction("Configure Classes", this, SLOT(configureClasses()));
+
+	connect(deleteOptions, SIGNAL(closedOut()), this, 
+		SLOT(deleteOptionSelected())); //to let program know user has selected what they want to delete from class
+
 	addClass("res/studyOption2.txt", 2, "2");
 	addClass("res/studyOption3.txt", 3, "3");
 	addClass("res/studyOption4.txt", 4, "4");
 	addClass("res/studyOption5.txt", 5, "5");
 	addClass("res/studyOption6.txt", 6, "6");
 	
-	studyMenu->addAction("Configure Classes", this, SLOT(configureClasses()));
-	labelPic = new QPixmap(picPath);
 	this->setPixmap(labelPic->scaled(wdt, hgt, Qt::KeepAspectRatio));
-	connect(deleteOptions, SIGNAL(closedOut()), this, 
-		SLOT(deleteOptionSelected())); //to let program know user has selected what they want to delete from class
+
 }
 studyLabel::~studyLabel() {
 	delete studyMenu;
@@ -183,7 +184,7 @@ void studyLabel::configureClasses() {
 	}
 	else if (configChoice.clickedButton() == deleteButton) { //to delete a class
 		QString classChoice = QInputDialog::getText(this, tr("Class Number Input"),
-			tr("Enter what class number to delete (1, 2, 3, 4, 5 or 6): "), QLineEdit::Normal);
+			tr("Enter what class number to delete (1, 2, 3, 4, 5 or 6):\t"), QLineEdit::Normal);
 		int classNum = classChoice.toInt(&valid);
 		
 		if (valid && classNum < 7 && classNum > 0) {
@@ -233,14 +234,14 @@ void studyLabel::configureClasses() {
 		else {
 			
 			if (classChoice != "") { //if statement is just so the dialog box doesn't pop up if you hit cancel or the x
-				showMessage("Please enter a valid choice.", "img/warningImage", "Invalid Action");
+				showMessage("Please enter a valid choice.", "img/warningImage", "Invalid Action\t\t");
 			}
 		}
 	}
 
 	else if (configChoice.clickedButton() == createButton) { //to create a class
 		QString classChoice = QInputDialog::getText(this, tr("Class Creation Input"),
-			tr("Enter what class number to override (1,2,3,4,5 or 6): "), QLineEdit::Normal);
+			tr("Enter what class number to override (1,2,3,4,5 or 6):\t"), QLineEdit::Normal);
 		int classNum = classChoice.toInt(&valid);
 	
 		if (valid && classNum < 7 && classNum > 0) {
@@ -250,7 +251,7 @@ void studyLabel::configureClasses() {
 		else {
 		
 			if (classChoice != "") {
-				showMessage("Please enter a valid choice.", "img/warningImage", "Invalid Action");
+				showMessage("Please enter a valid choice.\t", "img/warningImage", "Invalid Action");
 			}
 		}
 	}
@@ -272,8 +273,8 @@ void studyLabel::createClass(QString filename, int classNumber) {
 	studyOptionFile.open(QIODevice::WriteOnly);
 	QTextStream studyOptionStreamWrite(&studyOptionFile);	
 	studyOptionStreamWrite << "Valid\n";
-	QString className = QInputDialog::getText(this, tr("QInputDialog::getText()"),
-		tr("Enter class name: "), QLineEdit::Normal);
+	QString className = QInputDialog::getText(this, "Class name entry",
+		tr("Enter class name:\t\t"), QLineEdit::Normal);
 	className = QString::number(classNumber) + ". " + className;
 	studyOptionStreamWrite << className << "\n";
 
@@ -349,7 +350,7 @@ void studyLabel::createClass(QString filename, int classNumber) {
 		}
 	}
 	studyOptionFile.close();
-	showMessage("Class created.", "img/image14", "Creation Success");
+	showMessage("Class created.\t\t\t\t", "img/image14", "Creation Success");
 	return;
 }
 
@@ -358,7 +359,7 @@ void studyLabel::addToClass(QVector<QString>& urlVector, QVector<QString>& fileV
 
 	if (addingURL) {
 		while (1) {
-			QString url = QInputDialog::getText(this, tr("Webpage addition"),
+			QString url = QInputDialog::getText(this, tr("Webpage addition\t\t"),
 				tr("Enter URL you want add. Hit cancel when done!"), QLineEdit::Normal);
 			if (url == "") {
 				break;
@@ -489,7 +490,7 @@ void studyLabel::deleteOptionSelected() {
 	studyOptionStream << classNameToDeleteFrom << "\n";
 
 	for (int i = 0; i < fileVectorToDelete->size(); i++) {
-		studyOptionStream << (*fileVectorToDelete)[i] << "\n"; //derefrence pointer to vecotrs
+		studyOptionStream << (*fileVectorToDelete)[i] << "\n"; //derefrence pointer to vectors
 	}
 	studyOptionStream << "---------------------------------\n";
 

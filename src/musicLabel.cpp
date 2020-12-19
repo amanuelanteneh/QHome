@@ -110,7 +110,7 @@ void musicLabel::queueMusic() {
 			optionList << playlists[h].name;
 		}
 		QString playlistName = QInputDialog::getItem(this, "Choose playlist to queue song from",
-			"Playlists:", optionList, 0, false); //set editable to false
+			"Playlists:\t\t\t\t\t\t\t", optionList, 0, false); //set editable to false
 		bool playlistPicked = 0;
 		int index = -1;
 		for (int i = 0; i < playlists.size(); i++) {
@@ -126,12 +126,12 @@ void musicLabel::queueMusic() {
 			optionList << "";
 			while (iter.hasNext()) {
 				iter.next();
-				optionList << iter.value().name;
+				optionList << iter.key();
 			}
 			QString songToQueue = "";
 			while (1) {
 				songToQueue = QInputDialog::getItem(this, "Choose song to queue",
-					"Songs:", optionList, 0, false); //set editable to false
+					"Songs:\t\t\t\t\t\t", optionList, 0, false); //set editable to false
 				if (songToQueue != "") {
 					spotify.post("https://api.spotify.com/v1/me/player/queue?uri=" + (*playlists[index].songs)[songToQueue].uri);
 				}
@@ -238,6 +238,7 @@ void musicLabel::getPlaylists() {
 				playlistItems[i].toObject()["id"].toString(), new QMap<QString, Song> };
 			QString offset = "0";
 			auto contentsReply = spotify.get(QUrl("https://api.spotify.com/v1/playlists/" + tempPlaylist.id + "/tracks?offset=" + offset));
+
 			connect(contentsReply, &QNetworkReply::finished, [=]() {
 				if (contentsReply->error() != QNetworkReply::NoError) {
 					showMessage(contentsReply->errorString(), "img/warningImage", "Music Info");
@@ -254,7 +255,7 @@ void musicLabel::getPlaylists() {
 					Song tempSong = { contentsItems[j].toObject()["track"].toObject()["name"].toString(),
 									contentsItems[j].toObject()["track"].toObject()["album"].toObject()["artists"].toArray()[0].toObject()["name"].toString(),
 									contentsItems[j].toObject()["track"].toObject()["uri"].toString() };
-					tempPlaylist.songs->insert(tempSong.name, tempSong);
+					tempPlaylist.songs->insert(tempSong.name + " by: " + tempSong.artist, tempSong);
 				}
 				//allows app to get at most 200 songs from playlist since API only returns at most 100 songs per call
 				if (numSongs == 100) { 
@@ -334,6 +335,7 @@ void musicLabel::changeToAlbumArt() {
 	return;
 }
 void musicLabel::checkForPlaybackChange() {
+
 	if (isAccessGranted && userName != "") {
 		auto reply = spotify.get(QUrl("https://api.spotify.com/v1/me/player/devices"));
 		connect(reply, &QNetworkReply::finished, [=]() { //check for active device first
@@ -363,7 +365,8 @@ void musicLabel::checkForPlaybackChange() {
 				showMessage(replyCurrentSong->errorString(), "img/warningImage", "Music Info");
 				return;
 			}
-			if (isAccessGranted) { //to catch if user doesn't have an active session playing
+			//to catch if user doesn't have an active session playing
+			if (isAccessGranted) { 
 				auto data = replyCurrentSong->readAll();
 				auto document = QJsonDocument::fromJson(data);
 				auto root = document.object();
