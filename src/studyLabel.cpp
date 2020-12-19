@@ -12,18 +12,19 @@ studyLabel::studyLabel(QWidget* parent, const QString& picPath, int w, int h) {
 	
 	deleteOptions->setWindowIcon(QIcon("img/image14"));
 	deleteOptions->setWindowTitle("Deletion Options");
-	deleteOptions->setFont(QFont("Courier"));	addClass("res/studyOption1.txt", 1, "1");
-	studyMenu->addAction("Configure Classes", this, SLOT(configureClasses()));
+	deleteOptions->setFont(QFont("Courier"));	
 
 	connect(deleteOptions, SIGNAL(closedOut()), this, 
 		SLOT(deleteOptionSelected())); //to let program know user has selected what they want to delete from class
 
+	addClass("res/studyOption1.txt", 1, "1");	
 	addClass("res/studyOption2.txt", 2, "2");
 	addClass("res/studyOption3.txt", 3, "3");
 	addClass("res/studyOption4.txt", 4, "4");
 	addClass("res/studyOption5.txt", 5, "5");
 	addClass("res/studyOption6.txt", 6, "6");
-	
+	studyMenu->addAction("Configure Classes", this, SLOT(configureClasses()));
+
 	this->setPixmap(labelPic->scaled(wdt, hgt, Qt::KeepAspectRatio));
 
 }
