@@ -1,6 +1,6 @@
 # QHome
 
-QHome is a desktop application intended to bring multiple tasks that are done while studying/doing homework to one convient location.   
+QHome is a desktop application intended to bring multiple tasks that are done while studying/doing homework to one convenient location.   
 Features include:   
 ⋅ Display of current weather conditions for users current location.  
 ⋅ Ability to connect to users Beats wireless headphones via bluetooth once device is found and saved.  
