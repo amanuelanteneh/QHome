@@ -13,5 +13,5 @@ Features include:
   
 ⋅ Ability to control playback of user's active spotify session such as playing/pausing current track, changing volume, skip to next/previous track, queue tracks from the user's playlists and getting information about user's currently playing track all via the Spotify API.   
   
-![Image 1](img/demoPic2.png)   
-![Image 2](img/demoPic1.png)
+![Image 1](img/demoPic.png)   
+
