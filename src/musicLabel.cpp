@@ -178,36 +178,31 @@ void musicLabel::changeVolume() {
 void musicLabel::authenticationStatusChanged(QAbstractOAuth::Status status) {
 
 	if (status == QAbstractOAuth::Status::Granted) {
+		//first get username 
+		auto reply = spotify.get(QUrl("https://api.spotify.com/v1/me"));
+		connect(reply, &QNetworkReply::finished, [=]() {
+			if (reply->error() != QNetworkReply::NoError) { //check for network reply error
+				showMessage(reply->errorString(), "img/warningImage", "Music Info");
+				return;
+			}
 
-		if (userName == "" && playlists.isEmpty()) {
-			//first get username 
-			auto reply = spotify.get(QUrl("https://api.spotify.com/v1/me"));
-			connect(reply, &QNetworkReply::finished, [=]() {
-				if (reply->error() != QNetworkReply::NoError) { //check for network reply error
-					showMessage(reply->errorString(), "img/warningImage", "Music Info");
-					return;
-				}
-				
-				//parse JSON reply
-				auto data = reply->readAll(); 
-				auto document = QJsonDocument::fromJson(data);
-				auto root = document.object();
-				userName = root["id"].toString();
+			//parse JSON reply
+			auto data = reply->readAll();
+			auto document = QJsonDocument::fromJson(data);
+			auto root = document.object();
+			userName = root["id"].toString();
 
-				reply->deleteLater();
-				});
-
-			getPlaylists();
-
-			isAccessGranted = 1; //do at end
-		}
+			reply->deleteLater();
+			});
+		getPlaylists();
 	}
+
 	else if (status == QAbstractOAuth::Status::RefreshingToken) {
 		showMessage("Refreshing Token", "img/spotifyWindowIcon", "Music Info");
 	}
 	else if (status == QAbstractOAuth::Status::NotAuthenticated) {
-		isAccessGranted = 0;
-		showMessage("Not authenticated please restart application", "img/spotifyWindowIcon", "Music Info");
+		//isAccessGranted = 0;
+		showMessage("Not authenticated. Retrying...", "img/spotifyWindowIcon", "Music Info");
 	}
 	else if (status == QAbstractOAuth::Status::TemporaryCredentialsReceived) {
 		return;
@@ -217,7 +212,7 @@ void musicLabel::authenticationStatusChanged(QAbstractOAuth::Status status) {
 void musicLabel::getPlaylists() {
 
 	auto playlistReply = spotify.get(QUrl("https://api.spotify.com/v1/me/playlists"));
-
+	playlists.clear();
 	connect(playlistReply, &QNetworkReply::finished, [=]() {
 		if (playlistReply->error() != QNetworkReply::NoError) {
 			showMessage(playlistReply->errorString(), "img/warningImage", "Music Info");
@@ -231,7 +226,7 @@ void musicLabel::getPlaylists() {
 
 		int numPlaylists = playlistItems.size();
 		for (int i = 0; i < numPlaylists; i++) { //for each playlist
-		
+
 			Playlist tempPlaylist = { playlistItems[i].toObject()["name"].toString(),
 				playlistItems[i].toObject()["id"].toString(), new QMap<QString, Song> };
 			QString offset = "0";
@@ -256,7 +251,7 @@ void musicLabel::getPlaylists() {
 					tempPlaylist.songs->insert(tempSong.name + " by: " + tempSong.artist, tempSong);
 				}
 				//allows app to get at most 200 songs from playlist since API only returns at most 100 songs per call
-				if (numSongs == 100) { 
+				if (numSongs == 100) {
 					auto contentsReply2 = spotify.get(QUrl("https://api.spotify.com/v1/playlists/" + tempPlaylist.id + "/tracks?offset=100"));
 					connect(contentsReply2, &QNetworkReply::finished, [=]() {
 						if (contentsReply2->error() != QNetworkReply::NoError) {
@@ -283,7 +278,8 @@ void musicLabel::getPlaylists() {
 		}
 		});
 	connect(albumRefreshTimer, SIGNAL(timeout()), this, SLOT(checkForPlaybackChange())); //start timer only when access granted
-	albumRefreshTimer->start(1000); //check if current song changed every 1 seconds
+	albumRefreshTimer->start(2000); //check if current song changed every 2 seconds
+	isAccessGranted = 1;
 }
 
 //called when program thinks song has changed
@@ -347,42 +343,49 @@ void musicLabel::checkForPlaybackChange() {
 			auto document = QJsonDocument::fromJson(data);
 			auto root = document.object();
 			auto devices = root["devices"].toArray();
-			if (devices.isEmpty()) {
-				isAccessGranted = 0; //so next message doesn't pop up every 3 seconds	
+			if (devices.isEmpty()) { //if user has no active devices
+				isAccessGranted = 0; //so next message doesn't pop up every 2 seconds	
 				disconnect(albumRefreshTimer, SIGNAL(timeout()), this, SLOT(checkForPlaybackChange()));
+				albumRefreshTimer->stop();
 				showMessage("No active devices found. Please click the 'Start' option again after opening the spotify desktop app or web player.", "img/spotifyWindowIcon", "Music Info");
 			}
-			else if (devices[0].toObject()["is_active"].toBool() == false) { //just check first device
-				isAccessGranted = 0;
-				disconnect(albumRefreshTimer, SIGNAL(timeout()), this, SLOT(checkForPlaybackChange()));
-				showMessage("Device found but player inactive. Please start playing song before connecting.", "img/spotifyWindowIcon", "Music Info");
-			}
-			else {
-				auto replyCurrentSong = spotify.get(QUrl("https://api.spotify.com/v1/me/player/currently-playing"));
-				connect(replyCurrentSong, &QNetworkReply::finished, [=]() { // now check if song is different
-					if (replyCurrentSong->error() != QNetworkReply::NoError) {
-						showMessage(replyCurrentSong->errorString(), "img/warningImage", "Music Info");
-						return;
-					}
-					//to catch if user doesn't have an active session playing
-					if (isAccessGranted) {
-						auto data = replyCurrentSong->readAll();
-						auto document = QJsonDocument::fromJson(data);
-						auto root = document.object();
-
-						auto artist = root["item"].toObject()["album"].toObject()["artists"].toArray();
-
-						if (currentPlayingSong.uri != artist[0].toObject()["uri"].toString()) {
-							refreshAlbumArt();
+			else if (!devices.isEmpty()) { //check devices to see if any are active 
+				bool foundActiveDevice = 0;
+				for (int i = 0; i < devices.size(); i++) {
+					if (devices[i].toObject()["is_active"].toBool() == true) foundActiveDevice = 1;
+				}
+				if (foundActiveDevice) {
+					auto replyCurrentSong = spotify.get(QUrl("https://api.spotify.com/v1/me/player/currently-playing"));
+					connect(replyCurrentSong, &QNetworkReply::finished, [=]() { // now check if song is different
+						if (replyCurrentSong->error() != QNetworkReply::NoError) {
+							showMessage(replyCurrentSong->errorString(), "img/warningImage", "Music Info");
+							return;
 						}
-						currentPlayingSong.artist = artist[0].toObject()["name"].toString();
-						auto uri = root["item"].toObject()["uri"];
-						currentPlayingSong.uri = uri.toString();
-						auto name = root["item"].toObject()["name"];
-						currentPlayingSong.name = name.toString();
-					}
-					replyCurrentSong->deleteLater();
-					});
+						if (isAccessGranted) {
+							auto data = replyCurrentSong->readAll();
+							auto document = QJsonDocument::fromJson(data);
+							auto root = document.object();
+
+							auto artist = root["item"].toObject()["album"].toObject()["artists"].toArray();
+
+							if (currentPlayingSong.uri != artist[0].toObject()["uri"].toString()) {
+								refreshAlbumArt();
+							}
+							currentPlayingSong.artist = artist[0].toObject()["name"].toString();
+							auto uri = root["item"].toObject()["uri"];
+							currentPlayingSong.uri = uri.toString();
+							auto name = root["item"].toObject()["name"];
+							currentPlayingSong.name = name.toString();
+						}
+						replyCurrentSong->deleteLater();
+						});
+				}
+				else { // if user has no active devices
+					isAccessGranted = 0;
+					disconnect(albumRefreshTimer, SIGNAL(timeout()), this, SLOT(checkForPlaybackChange()));
+					albumRefreshTimer->stop();
+					showMessage("Device(s) found but player inactive. Please start playing song before connecting.", "img/spotifyWindowIcon", "Music Info");
+				}
 			}
 			reply->deleteLater();
 			});
