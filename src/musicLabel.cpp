@@ -42,7 +42,7 @@ musicLabel::musicLabel(QWidget* parent, const QString& picPath, int w, int h) {
 
 	connect(&spotify, &QOAuth2AuthorizationCodeFlow::statusChanged,
 		this, &musicLabel::authenticationStatusChanged);
-
+	
 	this->setPixmap(labelPic->scaled(wdt, hgt, Qt::KeepAspectRatio));
 }
 
@@ -194,8 +194,6 @@ void musicLabel::authenticationStatusChanged(QAbstractOAuth::Status status) {
 				auto root = document.object();
 				userName = root["id"].toString();
 
-				connect(albumRefreshTimer, SIGNAL(timeout()), this, SLOT(checkForPlaybackChange())); //start timer only when access granted
-				albumRefreshTimer->start(1000); //check if current song changed every 1 seconds
 				reply->deleteLater();
 				});
 
@@ -284,6 +282,8 @@ void musicLabel::getPlaylists() {
 			playlists.append(tempPlaylist);
 		}
 		});
+	connect(albumRefreshTimer, SIGNAL(timeout()), this, SLOT(checkForPlaybackChange())); //start timer only when access granted
+	albumRefreshTimer->start(1000); //check if current song changed every 1 seconds
 }
 
 //called when program thinks song has changed
@@ -357,32 +357,34 @@ void musicLabel::checkForPlaybackChange() {
 				disconnect(albumRefreshTimer, SIGNAL(timeout()), this, SLOT(checkForPlaybackChange()));
 				showMessage("Device found but player inactive. Please start playing song before connecting.", "img/spotifyWindowIcon", "Music Info");
 			}
+			else {
+				auto replyCurrentSong = spotify.get(QUrl("https://api.spotify.com/v1/me/player/currently-playing"));
+				connect(replyCurrentSong, &QNetworkReply::finished, [=]() { // now check if song is different
+					if (replyCurrentSong->error() != QNetworkReply::NoError) {
+						showMessage(replyCurrentSong->errorString(), "img/warningImage", "Music Info");
+						return;
+					}
+					//to catch if user doesn't have an active session playing
+					if (isAccessGranted) {
+						auto data = replyCurrentSong->readAll();
+						auto document = QJsonDocument::fromJson(data);
+						auto root = document.object();
+
+						auto artist = root["item"].toObject()["album"].toObject()["artists"].toArray();
+
+						if (currentPlayingSong.uri != artist[0].toObject()["uri"].toString()) {
+							refreshAlbumArt();
+						}
+						currentPlayingSong.artist = artist[0].toObject()["name"].toString();
+						auto uri = root["item"].toObject()["uri"];
+						currentPlayingSong.uri = uri.toString();
+						auto name = root["item"].toObject()["name"];
+						currentPlayingSong.name = name.toString();
+					}
+					replyCurrentSong->deleteLater();
+					});
+			}
 			reply->deleteLater();
-			});
-		auto replyCurrentSong = spotify.get(QUrl("https://api.spotify.com/v1/me/player/currently-playing"));
-		connect(replyCurrentSong, &QNetworkReply::finished, [=]() { // now check if song is different
-			if (replyCurrentSong->error() != QNetworkReply::NoError) {
-				showMessage(replyCurrentSong->errorString(), "img/warningImage", "Music Info");
-				return;
-			}
-			//to catch if user doesn't have an active session playing
-			if (isAccessGranted) { 
-				auto data = replyCurrentSong->readAll();
-				auto document = QJsonDocument::fromJson(data);
-				auto root = document.object();
-
-				auto artist = root["item"].toObject()["album"].toObject()["artists"].toArray();
-
-				if (currentPlayingSong.uri != artist[0].toObject()["uri"].toString()) {
-					refreshAlbumArt();
-				}
-				currentPlayingSong.artist = artist[0].toObject()["name"].toString();
-				auto uri = root["item"].toObject()["uri"];
-				currentPlayingSong.uri = uri.toString();
-				auto name = root["item"].toObject()["name"];
-				currentPlayingSong.name = name.toString();
-			}
-			replyCurrentSong->deleteLater();
 			});
 	}
 	return;
