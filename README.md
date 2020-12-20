@@ -1,4 +1,4 @@
-# QHome
+# QHome ![Image 0](img/image14.png)
 
 QHome is a desktop application intended to bring multiple tasks that are done while studying/doing homework to one convenient location.   
 Features include:   
