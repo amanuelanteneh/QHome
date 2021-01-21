@@ -1,15 +1,1 @@
-﻿  Reading Qt configuration (C:/QtVisualStudio/5.15.0/msvc2019_64/bin/qmake)
-  moc src\todoLabel.h
-  moc src\studyLabel.h
-  moc src\musicLabel.h
-  bluetoothLabel.cpp
-  main.cpp
-  musicLabel.cpp
-  qHome.cpp
-  studyLabel.cpp
-  todoLabel.cpp
-  moc_musicLabel.cpp
-  moc_qHome.cpp
-  moc_studyLabel.cpp
-  moc_todoLabel.cpp
-  QHome.vcxproj -> C:\Users\Amanuel Anteneh\Documents\Visual Studio 2019\QHome\x64\Release\QHome.exe
+﻿  QHome.vcxproj -> C:\Users\Amanuel Anteneh\Documents\Visual Studio 2019\QHome\x64\Release\QHome.exe
