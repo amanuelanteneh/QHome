@@ -1,28 +1,15 @@
 ﻿  Reading Qt configuration (C:/QtVisualStudio/5.15.0/msvc2019_64/bin/qmake)
-  uic qHome.ui
-  rcc qHome.qrc
   moc src\todoLabel.h
   moc src\studyLabel.h
-  moc src\qHome.h
-  moc src\myQListWidget.h
   moc src\musicLabel.h
-  moc src\imageDownloader.h
-  moc src\bluetoothLabel.h
-   RCC: Warning: No resources in 'C:\Users\Amanuel Anteneh\Documents\Visual Studio 2019\QHome\QHome\qHome.qrc'.
   bluetoothLabel.cpp
-  imageDownloader.cpp
   main.cpp
   musicLabel.cpp
-  myQListWidget.cpp
   qHome.cpp
   studyLabel.cpp
   todoLabel.cpp
-  qrc_qHome.cpp
-  moc_todoLabel.cpp
-  moc_studyLabel.cpp
-  moc_qHome.cpp
-  moc_myQListWidget.cpp
   moc_musicLabel.cpp
-  moc_imageDownloader.cpp
-  moc_bluetoothLabel.cpp
+  moc_qHome.cpp
+  moc_studyLabel.cpp
+  moc_todoLabel.cpp
   QHome.vcxproj -> C:\Users\Amanuel Anteneh\Documents\Visual Studio 2019\QHome\x64\Release\QHome.exe
