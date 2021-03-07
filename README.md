@@ -1,7 +1,7 @@
 
 # QHome ![](img/image15Small.png)
 
-https://user-images.githubusercontent.com/56704119/110244234-bca23380-7f2b-11eb-8de2-945c19b1f425.mp4
+Demo Video: https://user-images.githubusercontent.com/56704119/110244234-bca23380-7f2b-11eb-8de2-945c19b1f425.mp4
 
 QHome is a desktop application intended to bring multiple tasks that are done while studying/doing homework to one convenient location.   
 Features include:   
