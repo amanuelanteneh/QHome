@@ -1,20 +1,24 @@
 #include <iostream>
 using namespace std;
 #include "qHome.h"
-#define API_ID "762fe51da0e8caa555c7a4f03d4fa84d" //my API ID key for openweather.org
+#define API_ID_WETH "762fe51da0e8caa555c7a4f03d4fa84d" //my API ID key for openweather.org
+
 qHome::qHome(QWidget* parent) : QMainWindow(parent) {
 	ui.setupUi(this);
 	QDesktopWidget desktop;
 	screenHeight = desktop.geometry().height();
 	screenWidth = desktop.geometry().width();
+	
+	apiReplyHandler = new QNetworkAccessManager(this);
 	bkgdMenu = new QMenu();
 	wethInfo = new QLabel("", this);
 	wethIcon = new QLabel("", this);
-	openWeth = new QNetworkAccessManager(this);
-	headPhones = new bluetoothLabel(nullptr, "img/beatsUnconnected", screenHeight / 11, screenHeight / 11);
-	classWork = new studyLabel(nullptr, "img/bookImage2", screenHeight / 11, screenHeight / 11);
-	toDoList = new todoLabel(nullptr, "img/todoListImage", screenHeight / 11, screenHeight / 11);
-	musicPlayer = new musicLabel(nullptr, "img/spotifyImage", screenHeight / 11, screenHeight / 11);
+	newsInfo = new QLabel("", this);
+	headPhones = new bluetoothLabel(nullptr, "img/beatsUnconnected", screenHeight / 9, screenHeight / 9);
+	classWork = new studyLabel(nullptr, "img/bookImage2", screenHeight / 9, screenHeight / 9);
+	toDoList = new todoLabel(nullptr, "img/todoListImage", screenHeight / 9, screenHeight / 9);
+	musicPlayer = new musicLabel(nullptr, "img/spotifyImage", screenHeight / 9, screenHeight / 9);
+	newsApp = new newsLabel(nullptr, "img/newsImage", screenHeight / 9, screenHeight / 9);
 
 	/* Setup weather stuff */
 	wethIcon->setStyleSheet("QLabel { color : white; }");
@@ -22,7 +26,7 @@ qHome::qHome(QWidget* parent) : QMainWindow(parent) {
 	ui.wethInfo->setFixedHeight(screenHeight / 5);	
     ui.wethInfo->setStyleSheet("QLabel { color : white; }");
 	QFont font = ui.wethInfo->font();
-	font.setPointSize(((int)(screenHeight/82) + 2)); //add 2 so that value is never 0 bc behavior isn't defined for that
+	font.setPointSize(((int)(screenHeight/79) + 2)); //add 2 so that value is never 0 bc behavior isn't defined for that
 	ui.wethInfo->setAlignment(Qt::AlignLeft);
 	font.setFamily("century gothic");
 	ui.wethInfo->setFont(font);
@@ -57,6 +61,7 @@ qHome::qHome(QWidget* parent) : QMainWindow(parent) {
 	ui.gridCell2->addWidget(toDoList);
 	ui.gridCell3->addWidget(classWork);
 	ui.gridCell4->addWidget(musicPlayer);
+	ui.gridCell5->addWidget(newsApp);
 	
 	bkgdMenu->addAction("Change Background Image", this, SLOT(changeBackgroundImage()));
 	
@@ -75,6 +80,7 @@ qHome::qHome(QWidget* parent) : QMainWindow(parent) {
 		msg.setText("No location detected!");
 		msg.exec();
 	}
+
 }
 qHome::~qHome() {
 	delete wethIcon;
@@ -96,9 +102,9 @@ void qHome::positionUpdated(const QGeoPositionInfo& info) {
 	query.addQueryItem("lat", lat);
 	query.addQueryItem("lon", lon);
 	query.addQueryItem("mode", "json");
-	query.addQueryItem("APPID", API_ID);
+	query.addQueryItem("APPID", API_ID_WETH);
 	url.setQuery(query);
-	QNetworkReply* reply = openWeth->get(QNetworkRequest(url));
+	QNetworkReply* reply = apiReplyHandler->get(QNetworkRequest(url));
 	connect(reply, &QNetworkReply::finished,
 		this, [this, reply]() { handleGeoData(reply); });
 	return;
@@ -119,21 +125,27 @@ void qHome::handleGeoData(QNetworkReply* networkReply) {
 	userCity = city;
 	refreshWeather();
 }
+
+void qHome::refreshNews() {
+
+}
+
+
 void qHome::refreshWeather() {
 	QUrl url("http://api.openweathermap.org/data/2.5/weather");
 	QUrlQuery query;
 	query.addQueryItem("q", userCity);
 	query.addQueryItem("mode", "json");
-	query.addQueryItem("APPID", API_ID);
+	query.addQueryItem("APPID", API_ID_WETH);
 	url.setQuery(query);
-	QNetworkReply* reply = openWeth->get(QNetworkRequest(url));
+	QNetworkReply* reply = apiReplyHandler->get(QNetworkRequest(url));
 	connect(reply, &QNetworkReply::finished,
 		this, [this, reply]() { handleGeoWeatherData(reply); });
 }
 void qHome::handleGeoWeatherData(QNetworkReply* networkReply) { //where weather data is proccessed
 	if (!networkReply) {
 		QMessageBox message;
-		message.setText("No network reply for weather");
+		message.setText("No network reply for weather!");
 		message.setWindowTitle("Error");
 		message.setWindowIcon(QIcon("img/warningImage"));
 		message.exec();
@@ -164,7 +176,7 @@ void qHome::handleGeoWeatherData(QNetworkReply* networkReply) { //where weather 
 	tempFar += 32.0;
 	temprature.setNum((int)tempFar);
 	temprature += 176;
-	temprature += "F / ";
+	temprature += "F | ";
 	temprature += QString::number((int)tempCel);
 	temprature += 176;
 	temprature += "C";
@@ -177,38 +189,39 @@ void qHome::handleGeoWeatherData(QNetworkReply* networkReply) { //where weather 
 	QString weatherDesc = QString::fromStdString(tempWeatherDesc);
 	QString wInfo = userCity + "\n" + weatherDesc + "\n" + temprature + "\n";
 	ui.wethInfo->setText(wInfo);
+	wethID = 6741;
 	if (wethID > 800 && wethID < 805) { //cloudy
 		QPixmap pic("img/cloudy");
-		wethIcon->setPixmap(pic.scaled(screenHeight / 13, screenHeight / 13));
+		wethIcon->setPixmap(pic.scaled(screenHeight / 10, screenHeight / 10));
 	}
 	else if (wethID > 499 && wethID < 532) { //rain
 		QPixmap pic("img/rainy");
-		wethIcon->setPixmap(pic.scaled(screenHeight / 11, screenHeight / 11));
+		wethIcon->setPixmap(pic.scaled(screenHeight / 9, screenHeight / 9));
 	}
 	else if (wethID > 199 && wethID < 233) { //thunderstorm
 		QPixmap pic("img/thunderstorm");
-		wethIcon->setPixmap(pic.scaled(screenHeight / 11, screenHeight / 11));
+		wethIcon->setPixmap(pic.scaled(screenHeight / 9, screenHeight / 9));
 	}
 	else if (wethID > 299 && wethID < 322) { //drizzle
 		QPixmap pic("img/drizzle");
-		wethIcon->setPixmap(pic.scaled(screenHeight / 12, screenHeight / 12));
+		wethIcon->setPixmap(pic.scaled(screenHeight / 10, screenHeight / 10));
 	}
 	else if (wethID > 599 && wethID < 623) { //snow
 		QPixmap pic("img/snow");
-		wethIcon->setPixmap(pic.scaled(screenHeight / 10, screenHeight / 10));
+		wethIcon->setPixmap(pic.scaled(screenHeight / 8, screenHeight / 8));
 	}
 	else if (wethID == 741) { // foggy
 		QPixmap pic("img/foggy");
-		wethIcon->setPixmap(pic.scaled(screenHeight / 10, screenHeight / 10));
+		wethIcon->setPixmap(pic.scaled(screenHeight / 8.7, screenHeight / 8.7));
 	}
 	else { //clear sky
 		if (nightDay[2] != 'n') { // check to see if day or night
 			QPixmap pic("img/clearDay");
-			wethIcon->setPixmap(pic.scaled(screenHeight / 13, screenHeight / 13));
+			wethIcon->setPixmap(pic.scaled(screenHeight / 11, screenHeight / 11));
 		}
 		else {
 			QPixmap pic("img/clearNight");
-			wethIcon->setPixmap(pic.scaled(screenHeight / 10, screenHeight / 10));
+			wethIcon->setPixmap(pic.scaled(screenHeight / 8, screenHeight / 8));
 		}
 	}
 	ui.wethIcon->addWidget(wethIcon);

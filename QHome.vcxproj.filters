@@ -53,6 +53,9 @@
     <QtMoc Include="src\bluetoothLabel.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="src\newsLabel.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\todoLabel.cpp">
@@ -77,6 +80,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\bluetoothLabel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\newsLabel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

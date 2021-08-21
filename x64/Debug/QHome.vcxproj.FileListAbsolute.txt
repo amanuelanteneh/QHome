@@ -1,0 +1,3 @@
+C:\Users\Amanuel Anteneh\Documents\Visual Studio 2019\QHome\QHome\x64\Debug\QHome.exe
+C:\Users\Amanuel Anteneh\Documents\Visual Studio 2019\QHome\QHome\x64\Debug\QHome.pdb
+C:\Users\Amanuel Anteneh\Documents\Visual Studio 2019\QHome\x64\Debug\QHome.pdb

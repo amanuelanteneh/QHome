@@ -35,6 +35,8 @@ public:
     QGridLayout *wethIcon;
     QWidget *gridLayoutWidget_4;
     QGridLayout *gridCell4;
+    QWidget *gridLayoutWidget_6;
+    QGridLayout *gridCell5;
     QMenuBar *menuBar;
     QStatusBar *statusBar;
 
@@ -42,13 +44,13 @@ public:
     {
         if (qHomeClass->objectName().isEmpty())
             qHomeClass->setObjectName(QString::fromUtf8("qHomeClass"));
-        qHomeClass->resize(693, 789);
+        qHomeClass->resize(763, 873);
         qHomeClass->setStyleSheet(QString::fromUtf8(""));
         centralWidget = new QWidget(qHomeClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         gridLayoutWidget = new QWidget(centralWidget);
         gridLayoutWidget->setObjectName(QString::fromUtf8("gridLayoutWidget"));
-        gridLayoutWidget->setGeometry(QRect(20, 0, 161, 161));
+        gridLayoutWidget->setGeometry(QRect(20, 0, 191, 191));
         gridCell1 = new QGridLayout(gridLayoutWidget);
         gridCell1->setSpacing(6);
         gridCell1->setContentsMargins(11, 11, 11, 11);
@@ -56,7 +58,7 @@ public:
         gridCell1->setContentsMargins(0, 0, 0, 0);
         gridLayoutWidget_2 = new QWidget(centralWidget);
         gridLayoutWidget_2->setObjectName(QString::fromUtf8("gridLayoutWidget_2"));
-        gridLayoutWidget_2->setGeometry(QRect(20, 320, 161, 151));
+        gridLayoutWidget_2->setGeometry(QRect(20, 380, 191, 171));
         gridCell2 = new QGridLayout(gridLayoutWidget_2);
         gridCell2->setSpacing(6);
         gridCell2->setContentsMargins(11, 11, 11, 11);
@@ -64,7 +66,7 @@ public:
         gridCell2->setContentsMargins(0, 0, 0, 0);
         gridLayoutWidget_3 = new QWidget(centralWidget);
         gridLayoutWidget_3->setObjectName(QString::fromUtf8("gridLayoutWidget_3"));
-        gridLayoutWidget_3->setGeometry(QRect(20, 160, 161, 161));
+        gridLayoutWidget_3->setGeometry(QRect(20, 190, 191, 191));
         gridCell3 = new QGridLayout(gridLayoutWidget_3);
         gridCell3->setSpacing(6);
         gridCell3->setContentsMargins(11, 11, 11, 11);
@@ -72,10 +74,10 @@ public:
         gridCell3->setContentsMargins(0, 0, 0, 0);
         wethInfo = new QLabel(centralWidget);
         wethInfo->setObjectName(QString::fromUtf8("wethInfo"));
-        wethInfo->setGeometry(QRect(330, 10, 301, 141));
+        wethInfo->setGeometry(QRect(400, 10, 271, 171));
         gridLayoutWidget_5 = new QWidget(centralWidget);
         gridLayoutWidget_5->setObjectName(QString::fromUtf8("gridLayoutWidget_5"));
-        gridLayoutWidget_5->setGeometry(QRect(180, 0, 151, 161));
+        gridLayoutWidget_5->setGeometry(QRect(210, 0, 191, 191));
         wethIcon = new QGridLayout(gridLayoutWidget_5);
         wethIcon->setSpacing(6);
         wethIcon->setContentsMargins(11, 11, 11, 11);
@@ -83,16 +85,24 @@ public:
         wethIcon->setContentsMargins(0, 0, 0, 0);
         gridLayoutWidget_4 = new QWidget(centralWidget);
         gridLayoutWidget_4->setObjectName(QString::fromUtf8("gridLayoutWidget_4"));
-        gridLayoutWidget_4->setGeometry(QRect(20, 470, 161, 151));
+        gridLayoutWidget_4->setGeometry(QRect(20, 550, 191, 181));
         gridCell4 = new QGridLayout(gridLayoutWidget_4);
         gridCell4->setSpacing(6);
         gridCell4->setContentsMargins(11, 11, 11, 11);
         gridCell4->setObjectName(QString::fromUtf8("gridCell4"));
         gridCell4->setContentsMargins(0, 0, 0, 0);
+        gridLayoutWidget_6 = new QWidget(centralWidget);
+        gridLayoutWidget_6->setObjectName(QString::fromUtf8("gridLayoutWidget_6"));
+        gridLayoutWidget_6->setGeometry(QRect(210, 190, 191, 191));
+        gridCell5 = new QGridLayout(gridLayoutWidget_6);
+        gridCell5->setSpacing(6);
+        gridCell5->setContentsMargins(11, 11, 11, 11);
+        gridCell5->setObjectName(QString::fromUtf8("gridCell5"));
+        gridCell5->setContentsMargins(0, 0, 0, 0);
         qHomeClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(qHomeClass);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 693, 26));
+        menuBar->setGeometry(QRect(0, 0, 763, 22));
         qHomeClass->setMenuBar(menuBar);
         statusBar = new QStatusBar(qHomeClass);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));

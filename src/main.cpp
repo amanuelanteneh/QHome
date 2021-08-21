@@ -10,7 +10,7 @@ int main(int argc, char* argv[]){
 	int screenHeight = desktop.geometry().height();
 	int screenWidth = desktop.geometry().width();
 
-	theApp.setFixedSize(screenWidth/3, screenWidth/3);
+	theApp.setFixedSize(screenWidth/2.6, screenWidth/2.6);
 
 	theApp.show(); 
 

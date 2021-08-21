@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>693</width>
-    <height>789</height>
+    <width>763</width>
+    <height>873</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,8 +22,8 @@
      <rect>
       <x>20</x>
       <y>0</y>
-      <width>161</width>
-      <height>161</height>
+      <width>191</width>
+      <height>191</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridCell1"/>
@@ -32,9 +32,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>320</y>
-      <width>161</width>
-      <height>151</height>
+      <y>380</y>
+      <width>191</width>
+      <height>171</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridCell2"/>
@@ -43,9 +43,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>160</y>
-      <width>161</width>
-      <height>161</height>
+      <y>190</y>
+      <width>191</width>
+      <height>191</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridCell3"/>
@@ -53,10 +53,10 @@
    <widget class="QLabel" name="wethInfo">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>400</x>
       <y>10</y>
-      <width>301</width>
-      <height>141</height>
+      <width>271</width>
+      <height>171</height>
      </rect>
     </property>
     <property name="text">
@@ -66,10 +66,10 @@
    <widget class="QWidget" name="gridLayoutWidget_5">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>210</x>
       <y>0</y>
-      <width>151</width>
-      <height>161</height>
+      <width>191</width>
+      <height>191</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="wethIcon"/>
@@ -78,12 +78,23 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>470</y>
-      <width>161</width>
-      <height>151</height>
+      <y>550</y>
+      <width>191</width>
+      <height>181</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridCell4"/>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget_6">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>190</y>
+      <width>191</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridCell5"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -91,8 +102,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>693</width>
-     <height>26</height>
+     <width>763</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>

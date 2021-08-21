@@ -116,12 +116,14 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\musicLabel.cpp" />
     <ClCompile Include="src\myQListWidget.cpp" />
+    <ClCompile Include="src\newsLabel.cpp" />
     <ClCompile Include="src\qHome.cpp" />
     <ClCompile Include="src\studyLabel.cpp" />
     <ClCompile Include="src\todoLabel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
+    <QtMoc Include="src\newsLabel.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="theApp.rc" />

@@ -13,11 +13,13 @@
 #include "todoLabel.h"
 #include "musicLabel.h"
 #include "bluetoothLabel.h"
+#include "newsLabel.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QStringList>
 #include <QDesktopWidget>
+#include <qtimer.h>
 
 class qHome : public QMainWindow {
 	Q_OBJECT
@@ -29,6 +31,7 @@ public:
 private slots:
 	void positionUpdated(const QGeoPositionInfo& info);
 	void changeBackgroundImage();
+	void refreshNews();
 protected:
 	void resizeEvent(QResizeEvent* evt);
     void mousePressEvent(QMouseEvent* event);
@@ -40,6 +43,7 @@ private:
 	studyLabel* classWork;
 	todoLabel* toDoList;
 	musicLabel* musicPlayer;
+	newsLabel* newsApp;
 	QPixmap bkgd; 
 	QGeoCoordinate coord;
 	void handleGeoData(QNetworkReply* networkReply);
@@ -47,8 +51,9 @@ private:
 	void refreshWeather();
 	QLabel* wethInfo;
 	QLabel* wethIcon;
+	QLabel* newsInfo;
 	QString userCity;
-	QNetworkAccessManager *openWeth;
+	QNetworkAccessManager *apiReplyHandler;
 	Ui::qHomeClass ui;
 };
 
