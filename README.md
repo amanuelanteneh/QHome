@@ -16,8 +16,12 @@ Features include:
 ⋅ Ability to control playback of user's active spotify session such as playing/pausing current track, changing volume, skip to next/previous track, queue tracks from the user's playlists and getting information about user's currently playing track all via the Spotify API.   
 
 ⋅ Ability to check top news articles in USA by making calls to news API. Clicking on article name opens a borwser window with link to desired article.
-  
 
+  
+### News API call example
 ![Image 1](img/newsQHome.png)   
+
+
+### Spotify API call example
 ![Image 2](img/demoPic.png)   
 
