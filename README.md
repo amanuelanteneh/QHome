@@ -19,5 +19,5 @@ Features include:
   
 
 ![Image 1](img/newsQHome.png)   
-![Image 2](img/demoQHome.png)   
+![Image 2](img/demoPic.png)   
 
