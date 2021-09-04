@@ -18,10 +18,10 @@ Features include:
 ⋅ Ability to check top news articles in USA by making calls to news API. Clicking on article name opens a borwser window with link to desired article.
 
   
-### News API call example
+## News API call example
 ![Image 1](img/newsQHome.png)   
 
 
-### Spotify API call example
+## Spotify API call example
 ![Image 2](img/demoPic.png)   
 
